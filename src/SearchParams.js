@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import useBreedList from "./useBreedList";
 import Pet from "./Pet";
 
 const ANIMALS = [ "bird", "cat", "dog", "rabbit", "reptile" ];
@@ -8,7 +9,7 @@ const SearchParams = () => {
     const [ animal, setAnimal ] = useState( "" );
     const [ breed, setBreed ] = useState( "" );
     const [ pets, setPets ] = useState( [] );
-    const breeds = [];
+    const [ breeds ] = useBreedList( animal );
 
     useEffect( () => {
         requestPets();
@@ -21,8 +22,6 @@ const SearchParams = () => {
 
         const json = await res.json();
 
-        console.log( json );
-
         setPets( json.pets );
     }
 
@@ -30,9 +29,16 @@ const SearchParams = () => {
     function updateAnimal( e ) { setAnimal( e.target.value ); }
     function updateBreed( e ) { setBreed( e.target.value ) }
 
+    function submitForm( e ) {
+        e.preventDefault();
+        requestPets();
+    }
+
     return (
         <div className="search-params">
-            <form>
+            <form
+            onSubmit={ submitForm }
+            >
                 <label htmlFor="location">
                     Location
                     <input id="location" onChange={ updateLocation } value={location.toUpperCase()} placeholder="location"/>
